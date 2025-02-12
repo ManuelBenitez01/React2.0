@@ -1,0 +1,39 @@
+.productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1rem;
+  
+}
+.productos div {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.productos img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 5px;
+
+}
+.button{
+    background-color: #088cd8c0;
+    border: 1px solid;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 25%;
+    height: 2rem;
+    font-size: 1rem;
+}
+.button:hover{
+    background-color: #0a6eb9;
+    
+}
