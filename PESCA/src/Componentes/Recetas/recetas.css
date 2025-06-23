@@ -1,0 +1,150 @@
+.recetas-lista {
+  background: #fff;
+  border: 2px solid #1976d2;
+  border-radius: 18px;
+  padding: 2.2rem 1.7rem;
+  margin: 2.5rem auto;
+  max-width: 700px;
+  box-shadow: 0 6px 24px rgba(25, 118, 210, 0.08), 0 1.5px 8px rgba(229, 115, 115, 0.07);
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+.recetas-lista h3 {
+  color: #e57373;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.recetas-lista label {
+  display: block;
+  margin-bottom: 1.7rem;
+  font-weight: 600;
+  color: #1976d2;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.recetas-lista select {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+  background: #f7faff;
+  color: #1976d2;
+  font-size: 1.08rem;
+  margin-left: 0.7rem;
+  font-weight: 500;
+  transition: border 0.2s;
+}
+.recetas-lista select:focus {
+  outline: none;
+  border-color: #e57373;
+}
+.recetax{
+  padding: 0.5rem 0.7rem;
+  border:#e57373 solid 2px;
+  border-radius: 8px;
+}
+.recetas-producto ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recetas-producto li {
+  background: #f9f9fc;
+  
+}
+.ingredientes{
+  margin-bottom: .50rem;
+}
+
+
+.recetas-producto strong {
+  color: #e57373;
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.2px;
+}
+
+.recetas-producto .descripcion {
+  color: #555;
+  font-size: 1.04rem;
+  margin-bottom: 0.7rem;
+  font-style: italic;
+}
+
+.recetas-producto .rinde {
+  color: #1976d2;
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.recetas-producto .aderezo {
+  color: #e57373;
+  font-size: 1.01rem;
+  margin-top: 0.7rem;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.ingredientes-lista {
+  list-style: disc inside;
+  margin: 0.5rem 0 1rem 0.5rem;
+  padding-left: 1.2rem;
+  color: #444;
+  font-size: 1.04rem;
+}
+
+.ingredientes-lista li {
+  margin-bottom: 0.2rem;
+  padding-left: 0.2rem;
+}
+
+.pasos-lista {
+  margin: 0.7rem 0 0 0.5rem;
+  padding: 0;
+  color: #1976d2;
+  font-size: 1.04rem;
+  list-style: none;
+}
+
+.pasos-lista li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.pasos-lista .icono-paso {
+  font-size: 1.3rem;
+  margin-right: 0.8rem;
+  color: #e57373;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pasos-lista .tiempo-paso {
+  color: #888;
+  font-size: 0.99rem;
+  margin-left: 0.6rem;
+  font-style: italic;
+}
+
+@media (max-width: 700px) {
+  .recetas-lista {
+    padding: 1rem 0.5rem;
+    max-width: 98vw;
+  }
+  .recetas-producto li {
+    padding: 0.7rem 0.5rem;
+  }
+}

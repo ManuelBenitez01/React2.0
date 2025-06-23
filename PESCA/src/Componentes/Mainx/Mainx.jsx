@@ -4,8 +4,9 @@ import './Main.css';
 
 export default function Main() {
     return (
-        <div className="Main">
+
+        <main className="Main">
             <Productos/>
-        </div>
+        </main>
     )
 }

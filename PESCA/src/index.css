@@ -1,3 +1,9 @@
+:root {
+  --color-principal: #FFFFFF;
+  --color-secundario: #00587A;
+  --color-acento: #FF8A65;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -6,9 +12,9 @@
   text-decoration: none;
 }
 body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #f5f5f5;
-  color: #333;
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--color-principal);
+  color: var(--color-secundario);
   position: relative;
 }
 #root {
@@ -16,4 +22,45 @@ body {
   flex-direction: column;
   min-height: 100vh;
   position: relative;
+}
+body, .productos, .inicio-container  {
+  background-color: var(--color-principal) !important;
+  color: var(--color-secundario) !important;
+}
+
+header, footer {
+  background-color: var(--color-secundario) !important;
+  color: var(--color-principal) !important;
+}
+
+.button, .btn-categoria, .btn-categoria-header {
+  background-color: var(--color-secundario) !important;
+  color: var(--color-principal) !important;
+  border: none !important;
+  transition: background 0.2s, color 0.2s !important;
+}
+
+.button:hover, .btn-categoria:hover, .btn-categoria-header:hover,
+.boton-quitar, .cantidad-en-carrito {
+  background-color: var(--color-acento) !important;
+  color: var(--color-principal) !important;
+}
+
+.cantidad-en-carrito, .cantidad, .btn-eliminar {
+  background-color: var(--color-acento) !important;
+  color: var(--color-principal) !important;
+}
+
+h1, h2, h3 {
+  color: var(--color-secundario) !important;
+}
+
+.categorias-header-bar, .categorias, .categorias-grid {
+  background: var(--color-principal) !important;
+}
+
+input, select {
+  border: 1px solid var(--color-secundario) !important;
+  color: var(--color-secundario) !important;
+  background: var(--color-principal) !important;
 }
