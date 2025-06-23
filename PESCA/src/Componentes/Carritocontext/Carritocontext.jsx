@@ -63,20 +63,4 @@ export const CarritoProvider = ({ children }) => {
 CarritoProvider.propTypes = {
     children: PropTypes.node.isRequired,
 };
-npm create vite@latest NOMBRE-DEL-PROYECTO
-y
-React
-Javascript + SWC
-cd NOMBRE-DEL-PROYECTO
-npm install
-npm run dev
 
-
-re_MZbv3JhR_MxPcGnH9TWPtvkBhaZybmHsi
-
-trae .ai
-
-react-icons react-router-dom
-
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
