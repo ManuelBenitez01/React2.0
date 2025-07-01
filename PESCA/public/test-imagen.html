@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test de Imagen</title>
+</head>
+<body>
+    <h1>Prueba de imagen externa</h1>
+    <img src="https://www.pagina12.com.ar/fotos/thumb/320/espectaculos/20130718/notas_e/na29fo01.jpg" 
+         alt="Imagen de prueba" 
+         style="max-width: 500px;"
+         onload="console.log('Imagen cargada exitosamente')"
+         onerror="console.log('Error al cargar imagen')">
+    
+    <script>
+        // Probar si la imagen es accesible desde JavaScript
+        const img = new Image();
+        img.onload = () => console.log('JS: Imagen cargada');
+        img.onerror = () => console.log('JS: Error al cargar imagen');
+        img.src = "https://www.pagina12.com.ar/fotos/thumb/320/espectaculos/20130718/notas_e/na29fo01.jpg";
+    </script>
+</body>
+</html>

@@ -7,56 +7,40 @@ import PropTypes from 'prop-types';
 // Datos locales como fallback - fuera del componente para evitar recreaciones
 const productosLocales = [
     {
-        id: 1,
+        id: 0,
         Nombre: "Filet de Merluza",
         Precio: 100,
         Image: "/logo.png",
         Descripcion: "Filetes de merluza frescos, ideales para preparar a la plancha o al horno.",
-        Categoria: ["Congelados", "Filetes"],
-        Stock: true,
-        CantidadStock: 50
+        Categoria: ["Congelados", "Filetes"]
     },
     {
-        id: 2,
+        id: 1,
         Nombre: "Filet de Gatuzo",
         Precio: 200,
         Image: "/logo.png",
         Descripcion: "Filetes de gatuzo, un pescado blanco suave perfecto para empanadas o guisos.",
-        Categoria: ["Congelados"],
-        Stock: false,
-        CantidadStock: 0
+        Categoria: ["Congelados"]
     },
     {
-        id: 3,
+        id: 2,
         Nombre: "Filet de Lenguado",
         Precio: 300,
         Image: "/logo.png",
         Descripcion: "Filetes de lenguado de textura fina y sabor delicado, listos para cocinar.",
-        Categoria: ["Filetes", "Frescos"],
-        Stock: true,
-        CantidadStock: 25
+        Categoria: ["Filetes", "Frescos"]
     },
     {
-        id: 4,
+        id: 3,
         Nombre: "Filet de Salmón Rosado",
         Precio: 150,
         Image: "/logo.png",
         Descripcion: "Salmón rosado de alta calidad, rico en Omega-3, ideal para la parrilla.",
-        Categoria: ["Frescos", "Mariscos"],
-        Stock: true,
-        CantidadStock: 30
+        Categoria: ["Frescos", "Mariscos"]
     }
 ];
 
 const categoriasLocales = ['Congelados', 'Comidas', 'Mariscos', 'Filetes', 'Enteros', 'Frescos'];
-
-// Helper para resolver rutas de imágenes
-const resolverRutaImagen = (imagen) => {
-    if (!imagen) return '/logo.png';
-    if (imagen.startsWith('http')) return imagen; // URL completa
-    if (imagen.startsWith('/')) return imagen; // Ruta absoluta
-    return `/${imagen}`; // Ruta relativa
-};
 
 export default function Productos({ categoriaSeleccionada }) {
     const { eliminarDelCarrito, carrito, agregarAlCarrito } = useCarrito();
@@ -181,68 +165,26 @@ export default function Productos({ categoriaSeleccionada }) {
                 {productosFiltrados.map((Producto, index) => (
                     <div
                         key={Producto.id}
-                        className={`producto ${!Producto.Stock ? 'sin-stock' : ''}`}
+                        className="producto"
                         style={{
                             border: '1px solid #ddd',
                             borderRadius: '8px',
                             padding: '1rem',
                             margin: '1rem',
-                            backgroundColor: !Producto.Stock ? '#f5f5f5' : 'white',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                            position: 'relative'
+                            backgroundColor: 'white',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                         }}
                     >
-                        {!Producto.Stock && (
-                            <div style={{
-                                position: 'absolute',
-                                top: '10px',
-                                right: '10px',
-                                backgroundColor: '#dc3545',
-                                color: 'white',
-                                padding: '0.25rem 0.5rem',
-                                borderRadius: '4px',
-                                fontSize: '0.8rem',
-                                fontWeight: 'bold'
-                            }}>
-                                SIN STOCK
-                            </div>
-                        )}
-                        
                         <img
-                            src={resolverRutaImagen(Producto.Image)}
+                            src={Producto.Image}
                             alt={Producto.Nombre}
-                            onError={(e) => {
-                                e.target.src = '/logo.png'; // Imagen por defecto
-                            }}
-                            style={{ 
-                                width: '100%', 
-                                height: '200px', 
-                                objectFit: 'cover', 
-                                borderRadius: '4px',
-                                opacity: !Producto.Stock ? 0.6 : 1
-                            }}
+                            style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '4px' }}
                         />
-                        <h3 style={{ opacity: !Producto.Stock ? 0.6 : 1 }}>{Producto.Nombre}</h3>
-                        <p style={{ color: '#666', fontSize: '0.9rem', opacity: !Producto.Stock ? 0.6 : 1 }}>
-                            {Producto.Descripcion}
-                        </p>
+                        <h3>{Producto.Nombre}</h3>
+                        <p style={{ color: '#666', fontSize: '0.9rem' }}>{Producto.Descripcion}</p>
                         <p style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#2c5530' }}>
                             ${Producto.Precio}
                         </p>
-                        
-                        {/* Información de stock */}
-                        <div style={{ margin: '0.5rem 0' }}>
-                            {Producto.Stock ? (
-                                <p style={{ fontSize: '0.9rem', color: '#28a745', fontWeight: 'bold' }}>
-                                    ✅ En stock {Producto.CantidadStock > 0 ? `(${Producto.CantidadStock} disponibles)` : ''}
-                                </p>
-                            ) : (
-                                <p style={{ fontSize: '0.9rem', color: '#dc3545', fontWeight: 'bold' }}>
-                                    ❌ Sin stock
-                                </p>
-                            )}
-                        </div>
-                        
                         <p style={{ fontSize: '0.8rem', color: '#888' }}>
                             Categorías: {Array.isArray(Producto.Categoria) ? Producto.Categoria.join(', ') : Producto.Categoria}
                         </p>
@@ -251,19 +193,16 @@ export default function Productos({ categoriaSeleccionada }) {
                         <div style={{ marginTop: '1rem' }}>
                             <button
                                 onClick={() => agregarAlCarrito(Producto)}
-                                disabled={!Producto.Stock}
                                 style={{
-                                    backgroundColor: !Producto.Stock ? '#ccc' : '#2c5530',
+                                    backgroundColor: '#2c5530',
                                     color: 'white',
                                     border: 'none',
                                     padding: '0.5rem 1rem',
                                     borderRadius: '4px',
-                                    cursor: !Producto.Stock ? 'not-allowed' : 'pointer',
-                                    opacity: !Producto.Stock ? 0.6 : 1
+                                    cursor: 'pointer'
                                 }}
-                                title={!Producto.Stock ? 'Producto sin stock' : 'Agregar al carrito'}
                             >
-                                {!Producto.Stock ? 'Sin stock' : 'Agregar al carrito'}
+                                Agregar al carrito
                             </button>
                             
                             {cantidadEnCarrito(Producto.id) > 0 && (
