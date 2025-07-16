@@ -17,14 +17,14 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Contenedor principal - MÁS ANCHO PARA WEB */
+/* Contenedor principal - RESPONSIVE */
 .recetas-container {
-  max-width: 1800px; /* Aumentado de 1400px a 1800px */
+  max-width: 1400px; /* Reducido de 1800px */
   margin: 0 auto;
-  padding: 2rem 2rem; /* Aumentado padding lateral */
+  padding: 2rem 1rem; /* Reducido padding lateral */
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
-  width: 95%; /* Usa 95% del ancho disponible */
+  width: 100%; /* Cambiado de 95% a 100% */
 }
 
 /* Header de recetas */
@@ -132,7 +132,7 @@
 /* Grid de recetas - MÁS COLUMNAS EN PANTALLAS GRANDES */
 .recetas-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); /* Aumentado tamaño mínimo */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Reducido para móviles */
   gap: 2.5rem; /* Aumentado gap */
   margin-bottom: 3rem;
 }
@@ -615,12 +615,12 @@
 /* Responsive Design - PANTALLAS GRANDES MÁS ANCHAS */
 @media (min-width: 1400px) {
   .recetas-container {
-    max-width: 2000px; /* Aún más ancho en pantallas muy grandes */
-    padding: 2rem 3rem;
+    max-width: 1600px; /* Reducido de 2000px */
+    padding: 2rem 2rem; /* Reducido padding */
   }
   
   .recetas-grid {
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Reducido de 400px */
     gap: 3rem;
   }
   
@@ -803,6 +803,21 @@
   
   .productos-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Media query adicional para móviles muy pequeños */
+@media (max-width: 480px) {
+  .recetas-container {
+    padding: 0.5rem;
+  }
+  
+  .recetas-grid {
+    gap: 0.75rem;
+  }
+  
+  .recetas-header {
+    padding: 1rem 0;
   }
 }
 

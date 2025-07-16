@@ -1,28 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import AdminLogin from './AdminLogin';
 import AdminPanel from './AdminPanel';
 
 const Admin = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [adminToken, setAdminToken] = useState(null);
+    const [adminData, setAdminData] = useState(null);
 
-    useEffect(() => {
-        // Verificar si el usuario ya está logueado
-        const loggedIn = localStorage.getItem('admin_logged_in') === 'true';
-        setIsLoggedIn(loggedIn);
-    }, []);
-
-    const handleLogin = (status) => {
-        setIsLoggedIn(status);
+    const handleLogin = (loginData) => {
+        setIsLoggedIn(true);
+        setAdminToken(loginData.token);
+        setAdminData(loginData.admin);
     };
 
     const handleLogout = () => {
         setIsLoggedIn(false);
+        setAdminToken(null);
+        setAdminData(null);
     };
 
     return (
         <div>
             {isLoggedIn ? (
-                <AdminPanel onLogout={handleLogout} />
+                <AdminPanel 
+                    onLogout={handleLogout} 
+                    token={adminToken}
+                    adminData={adminData}
+                />
             ) : (
                 <AdminLogin onLogin={handleLogin} />
             )}

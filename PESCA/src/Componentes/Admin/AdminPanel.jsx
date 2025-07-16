@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { productosService, categoriasService } from '../../services/api';
+import { productosService, categoriasService, productosCategoriasService } from '../../services/api';
+import { API_CONFIG } from '../../config/config.js';
+import ImageUploader from '../ImageUploader/ImageUploader';
 import './AdminPanel.css';
 
-const AdminPanel = ({ onLogout }) => {
+const AdminPanel = ({ onLogout, token, adminData }) => {
   // Estados principales
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
@@ -29,10 +31,58 @@ const AdminPanel = ({ onLogout }) => {
     CantidadStock: 0
   });
 
+  // Función para hacer requests autenticados
+  const authenticatedRequest = async (url, options = {}) => {
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    try {
+      const response = await fetch(`${API_CONFIG.BASE_URL}${url}`, {
+        ...options,
+        headers,
+      });
+
+      // Si el token expiró o es inválido
+      if (response.status === 401) {
+        onLogout();
+        throw new Error('Sesión expirada');
+      }
+
+      return response;
+    } catch (error) {
+      if (error.message === 'Sesión expirada') {
+        throw error;
+      }
+      console.error('Error en request autenticado:', error);
+      throw new Error('Error de conexión');
+    }
+  };
+
+  // Función para hacer requests autenticados usando los servicios existentes
+  const setupTempAuth = () => {
+    // Establecer token temporalmente para que los servicios funcionen
+    if (token) {
+      localStorage.setItem('admin_token', token);
+    }
+  };
+
+  const cleanupTempAuth = () => {
+    // No limpiar el token para evitar interferir con otros componentes
+    // Los servicios seguirán funcionando mientras el token esté disponible
+  };
+
   // Cargar datos iniciales
   useEffect(() => {
+    setupTempAuth();
     cargarDatos();
-  }, []);
+    return cleanupTempAuth; // Cleanup al desmontar
+  }, [token]);
 
   // Función para cargar productos y categorías
   const cargarDatos = async () => {
@@ -41,21 +91,16 @@ const AdminPanel = ({ onLogout }) => {
     
     try {
       console.log('🔄 Cargando datos del admin...');
+      setupTempAuth(); // Asegurar que el token esté disponible
       
       // Cargar productos
       const productosResponse = await productosService.obtenerTodos();
       setProductos(productosResponse.data || []);
       
-      // Cargar categorías directamente desde el backend
+      // Cargar categorías usando el servicio
       try {
-        const response = await fetch('http://localhost:5000/api/categorias');
-        if (response.ok) {
-          const categoriasData = await response.json();
-          setCategorias(categoriasData.data || []);
-        } else {
-          console.warn('⚠️ No se pudieron cargar las categorías');
-          setCategorias([]);
-        }
+        const categoriasResponse = await categoriasService.obtenerTodas();
+        setCategorias(categoriasResponse.data || []);
       } catch (catError) {
         console.warn('⚠️ Error al cargar categorías:', catError);
         setCategorias([]);
@@ -68,7 +113,11 @@ const AdminPanel = ({ onLogout }) => {
       
     } catch (error) {
       console.error('❌ Error al cargar datos:', error);
-      setError('Error al cargar los datos: ' + error.message);
+      if (error.message === 'Sesión expirada') {
+        onLogout();
+      } else {
+        setError('Error al cargar los datos: ' + error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -78,30 +127,27 @@ const AdminPanel = ({ onLogout }) => {
   const cargarCategoriasProducto = async (productoId) => {
     try {
       console.log('🔍 Cargando categorías del producto ID:', productoId);
+      setupTempAuth(); // Asegurar autenticación
       setCategoriasProducto([]); // Limpiar antes de cargar
       
-      const response = await fetch(`http://localhost:5000/api/productos/${productoId}/categorias`);
+      const response = await productosCategoriasService.obtenerCategorias(productoId);
       
-      if (response.ok) {
-        const data = await response.json();
-        console.log('✅ Categorías del producto cargadas:', data);
+      // Formatear las categorías recibidas
+      const categoriasFormateadas = (response.data || []).map(cat => ({
+        id: Number(cat.id),
+        nombre: cat.nombre || cat.name || `Categoría ${cat.id}`
+      }));
+      
+      setCategoriasProducto(categoriasFormateadas);
+      console.log('✅ Categorías del producto cargadas:', categoriasFormateadas);
         
-        // Asegurar que tenemos el formato correcto
-        const categoriasFormateadas = (data.data || []).map(cat => ({
-          id: Number(cat.id),
-          nombre: cat.nombre || cat.name || `Categoría ${cat.id}`
-        }));
-        
-        setCategoriasProducto(categoriasFormateadas);
-        console.log('📋 Categorías formateadas:', categoriasFormateadas);
-        
-      } else {
-        console.warn('⚠️ No se pudieron cargar las categorías del producto:', response.status);
-        setCategoriasProducto([]);
-      }
     } catch (error) {
       console.error('❌ Error al cargar categorías del producto:', error);
-      setCategoriasProducto([]);
+      if (error.message === 'Sesión expirada') {
+        onLogout();
+      } else {
+        setCategoriasProducto([]);
+      }
     }
   };
 
@@ -135,24 +181,17 @@ const AdminPanel = ({ onLogout }) => {
   // CORREGIR: Función para guardar categorías del producto
   const guardarCategoriasProducto = async (productoId) => {
     try {
+      setupTempAuth(); // Asegurar autenticación
       const categoriasIds = categoriasProducto.map(cat => cat.id);
       console.log('💾 Guardando categorías del producto:', { productoId, categoriasIds });
       
-      const response = await fetch(`http://localhost:5000/api/productos/${productoId}/categorias`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ categorias: categoriasIds }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Error al actualizar categorías en el servidor');
-      }
-      
+      await productosCategoriasService.actualizarCategorias(productoId, categoriasIds);
       console.log('✅ Categorías actualizadas exitosamente');
     } catch (error) {
       console.error('❌ Error al actualizar categorías:', error);
+      if (error.message === 'Sesión expirada') {
+        onLogout();
+      }
       throw error; // Re-lanzar el error para manejarlo en handleSubmitEditar
     }
   };
@@ -177,6 +216,8 @@ const AdminPanel = ({ onLogout }) => {
     console.log('📝 Creando nuevo producto:', nuevoProducto);
     
     try {
+      setupTempAuth(); // Asegurar autenticación
+      
       // Validar campos obligatorios
       if (!nuevoProducto.Nombre || !nuevoProducto.Precio) {
         throw new Error('Nombre y precio son campos obligatorios');
@@ -215,7 +256,11 @@ const AdminPanel = ({ onLogout }) => {
       
     } catch (error) {
       console.error('❌ Error al crear producto:', error);
-      setError('Error al crear producto: ' + error.message);
+      if (error.message === 'Sesión expirada') {
+        onLogout();
+      } else {
+        setError('Error al crear producto: ' + error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -231,6 +276,8 @@ const AdminPanel = ({ onLogout }) => {
     console.log('🏷️ Categorías a asignar:', categoriasProducto);
     
     try {
+      setupTempAuth(); // Asegurar autenticación
+      
       // Validar campos obligatorios
       if (!productoEditando.Nombre || !productoEditando.Precio) {
         throw new Error('Nombre y precio son campos obligatorios');
@@ -266,7 +313,11 @@ const AdminPanel = ({ onLogout }) => {
       
     } catch (error) {
       console.error('❌ Error al actualizar producto:', error);
-      setError('Error al actualizar producto: ' + error.message);
+      if (error.message === 'Sesión expirada') {
+        onLogout();
+      } else {
+        setError('Error al actualizar producto: ' + error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -295,6 +346,7 @@ const AdminPanel = ({ onLogout }) => {
     limpiarError();
     
     try {
+      setupTempAuth(); // Asegurar autenticación
       await productosService.eliminar(id);
       
       // Actualizar lista local
@@ -303,7 +355,11 @@ const AdminPanel = ({ onLogout }) => {
       
     } catch (error) {
       console.error('❌ Error al eliminar producto:', error);
-      setError('Error al eliminar producto: ' + error.message);
+      if (error.message === 'Sesión expirada') {
+        onLogout();
+      } else {
+        setError('Error al eliminar producto: ' + error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -449,6 +505,16 @@ const AdminPanel = ({ onLogout }) => {
                   }))}
                   placeholder="/imagen.jpg o https://ejemplo.com/imagen.jpg"
                 />
+                
+                {/* Componente para subir imágenes */}
+                <ImageUploader
+                  onImageUploaded={(url) => setNuevoProducto(prev => ({
+                    ...prev,
+                    Image: url
+                  }))}
+                  currentImageUrl={nuevoProducto.Image}
+                  disabled={loading}
+                />
               </div>
 
               <div className="form-group">
@@ -567,6 +633,16 @@ const AdminPanel = ({ onLogout }) => {
                         Image: e.target.value
                       }))}
                       placeholder="/imagen.jpg o https://ejemplo.com/imagen.jpg"
+                    />
+                    
+                    {/* Componente para subir imágenes */}
+                    <ImageUploader
+                      onImageUploaded={(url) => setProductoEditando(prev => ({
+                        ...prev,
+                        Image: url
+                      }))}
+                      currentImageUrl={productoEditando.Image}
+                      disabled={loading}
                     />
                   </div>
 

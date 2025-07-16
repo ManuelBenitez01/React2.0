@@ -11,7 +11,15 @@
   box-sizing: border-box;
   list-style: none;
   text-decoration: none;
+  max-width: 100%;
 }
+
+/* Prevenir scroll horizontal */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--color-principal);
@@ -81,4 +89,9 @@ input:focus, select:focus, textarea:focus {
   color: var(--color-acento);
   border: none;
   cursor: pointer;
+}
+
+/* Asegurar que los contenedores principales no excedan el viewport */
+.App, main, section, div {
+  max-width: 100vw;
 }

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCarrito } from '../Carritocontext/Carritocontext';
 import { productosService, categoriasService } from '../../services/api';
-import './Productos.css'
-import PropTypes from 'prop-types';
+import './Productos.css';
 
 // Datos locales como fallback - fuera del componente para evitar recreaciones
 const productosLocales = [
@@ -72,17 +71,13 @@ export default function Productos({ categoriaSeleccionada }) {
         const cargarDatos = async () => {
             try {
                 setLoading(true);
-                console.log('Cargando datos desde API...');
                 
                 const productosData = await productosService.obtenerTodos();
-                console.log('Productos desde API:', productosData);
                 
                 const categoriasData = await categoriasService.obtenerTodas();
-                console.log('Categorías desde API:', categoriasData);
                 
                 if (productosData.data && productosData.data.length > 0) {
                     setProductos(productosData.data);
-                    console.log('Productos actualizados:', productosData.data.length);
                 }
                 
                 if (categoriasData && categoriasData.length > 0) {
@@ -295,7 +290,3 @@ export default function Productos({ categoriaSeleccionada }) {
         </>
     );
 }
-
-Productos.propTypes = {
-    categoriaSeleccionada: PropTypes.string
-};

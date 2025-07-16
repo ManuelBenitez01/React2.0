@@ -2,7 +2,6 @@ import { categorias } from '../Categorias/categorias';
 import { useState, useEffect, useRef } from 'react';
 import './Header.css';
 import { useCarrito } from '../Carritocontext/Carritocontext';
-import PropTypes from 'prop-types';
 
 export default function Header({ onVerInicio, onVerProductos, onSeleccionCategoria, onVerProvedores, onVerRecetas }) {
     const [mostrarCarrito, setMostrarCarrito] = useState(false);
@@ -149,7 +148,7 @@ export default function Header({ onVerInicio, onVerProductos, onSeleccionCategor
         <header>
             <div className="menu">
                 <div className="logo">
-                    <img src="/logotipo1.PNG" alt="Logo" />
+                    <img src="/logo1.svg" alt="Logo" />
                 </div>
 
                 <button
@@ -573,11 +572,3 @@ export default function Header({ onVerInicio, onVerProductos, onSeleccionCategor
         </header>
     );
 }
-
-Header.propTypes = {
-    onVerInicio: PropTypes.func.isRequired,
-    onVerProductos: PropTypes.func.isRequired,
-    onSeleccionCategoria: PropTypes.func.isRequired,
-    onVerProvedores: PropTypes.func.isRequired,
-    onVerRecetas: PropTypes.func.isRequired,
-};

@@ -10,7 +10,7 @@ body{
   background: color-mix(in srgb-linear, var(--color-principal) 70%, var(--color-mix) 30%)!important;
 }
 .inicio-container {
-  text-align: center;
+  text-align: center !important;
   padding: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--color-secundario);
@@ -41,7 +41,8 @@ body{
 }
 
 .descripcion {
-  margin: 1rem auto;
+  text-align: center;
+  margin: 0 auto !important;
   max-width: 600px;
   font-size: 1.1rem;
   font-weight: 500;

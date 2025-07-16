@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_CONFIG } from '../../config/config.js';
 import './AdminLogin.css';
 
 const AdminLogin = ({ onLogin }) => {
@@ -14,25 +15,36 @@ const AdminLogin = ({ onLogin }) => {
         setLoading(true);
         setError('');
 
-        // Credenciales por defecto (puedes cambiarlas)
-        const validCredentials = {
-            username: 'admin',
-            password: 'admin123'
-        };
+        try {
+            // Hacer request a la API de autenticación
+            const response = await fetch(`${API_CONFIG.BASE_URL}/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: credentials.username,
+                    password: credentials.password
+                }),
+            });
 
-        // Simulamos un delay de autenticación
-        setTimeout(() => {
-            if (
-                credentials.username === validCredentials.username &&
-                credentials.password === validCredentials.password
-            ) {
-                onLogin(true);
-                localStorage.setItem('admin_logged_in', 'true');
+            const data = await response.json();
+
+            if (data.success) {
+                // Pasar los datos del login sin guardar en localStorage
+                onLogin({
+                    token: data.data.token,
+                    admin: data.data.admin
+                });
             } else {
-                setError('Usuario o contraseña incorrectos');
+                setError(data.message || 'Usuario o contraseña incorrectos');
             }
+        } catch (error) {
+            console.error('Error de autenticación:', error);
+            setError('Error de conexión. Verifica que el servidor esté funcionando.');
+        } finally {
             setLoading(false);
-        }, 1000);
+        }
     };
 
     const handleChange = (e) => {

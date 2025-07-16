@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import PropTypes from 'prop-types';
 import './Inicio.css';
 
 const categorias = ['Congelados', 'Comidas','Mariscos', 'Filetes', 'Enteros', 'Frescos'];
@@ -134,7 +133,3 @@ export default function Inicio({ onSeleccionCategoria }) {
     </>
   );
 }
-
-Inicio.propTypes = {
-  onSeleccionCategoria: PropTypes.func,
-};

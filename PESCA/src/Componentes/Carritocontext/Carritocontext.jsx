@@ -1,5 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CarritoContext = createContext();
 
@@ -46,7 +45,6 @@ export const CarritoProvider = ({ children }) => {
     }, [descuento, codigoDescuentoAplicado]);
 
     const agregarAlCarrito = (producto, cantidad = 1) => {
-        console.log('🛒 Agregando al carrito:', producto.Nombre, 'Cantidad:', cantidad);
         setCarrito(prev => {
             const existe = prev.find(item => item.id === producto.id); 
             if (existe) {
@@ -62,7 +60,6 @@ export const CarritoProvider = ({ children }) => {
     };
 
     const vaciarCarrito = () => {
-        console.log('🗑️ Vaciando carrito');
         setCarrito([]);
         setDescuento(0);
         setCodigoDescuentoAplicado('');
@@ -72,7 +69,6 @@ export const CarritoProvider = ({ children }) => {
     };
 
     const eliminarDelCarrito = (id) => {
-        console.log('➖ Eliminando del carrito ID:', id);
         setCarrito(prev =>
             prev
                 .map(item =>
@@ -86,13 +82,11 @@ export const CarritoProvider = ({ children }) => {
 
     // Nueva función para remover completamente un producto
     const removerProducto = (id) => {
-        console.log('🗑️ Removiendo producto ID:', id);
         setCarrito(prev => prev.filter(item => item.id !== id));
     };
 
     // Nueva función para actualizar cantidad específica
     const actualizarCantidad = (id, nuevaCantidad) => {
-        console.log('🔄 Actualizando cantidad ID:', id, 'Nueva cantidad:', nuevaCantidad);
         if (nuevaCantidad <= 0) {
             removerProducto(id);
             return;
@@ -124,14 +118,12 @@ export const CarritoProvider = ({ children }) => {
         if (porcentajeDescuento) {
             setDescuento(porcentajeDescuento);
             setCodigoDescuentoAplicado(codigoMayuscula);
-            console.log('✅ Código aplicado:', codigoMayuscula, porcentajeDescuento + '%');
             return {
                 success: true,
                 message: `¡Descuento del ${porcentajeDescuento}% aplicado!`,
                 porcentaje: porcentajeDescuento
             };
         } else {
-            console.log('❌ Código inválido:', codigo);
             return {
                 success: false,
                 message: 'Código de descuento inválido'
@@ -143,7 +135,6 @@ export const CarritoProvider = ({ children }) => {
     const removerDescuento = () => {
         setDescuento(0);
         setCodigoDescuentoAplicado('');
-        console.log('🚫 Descuento removido');
     };
 
     // Calcular subtotal
@@ -233,9 +224,5 @@ export const CarritoProvider = ({ children }) => {
             {children}
         </CarritoContext.Provider>
     );
-};
-
-CarritoProvider.propTypes = {
-    children: PropTypes.node.isRequired,
 };
 

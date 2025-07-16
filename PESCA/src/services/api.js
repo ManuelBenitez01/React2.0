@@ -1,5 +1,41 @@
-// Configuración de la API
-const API_BASE_URL = 'http://localhost:5000/api';
+// Configuración centralizada de la API
+import { API_CONFIG } from '../config/config.js';
+
+const API_BASE_URL = API_CONFIG.BASE_URL;
+
+// Función para obtener el token de autenticación
+const getAuthToken = () => {
+  return localStorage.getItem('admin_token');
+};
+
+// Función para hacer requests autenticados
+const authenticatedFetch = async (url, options = {}) => {
+  const token = getAuthToken();
+  
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  // Si el token expiró, limpiar localStorage
+  if (response.status === 401) {
+    localStorage.removeItem('admin_token');
+    localStorage.removeItem('admin_data');
+    localStorage.removeItem('admin_logged_in');
+    window.location.href = '/admin'; // Redirigir al login
+  }
+
+  return response;
+};
 
 // Función helper para manejar las respuestas
 const handleResponse = async (response) => {
@@ -63,8 +99,6 @@ const validarImagenUrl = (imagen) => {
 
 // Función para mapear los datos del backend al formato del frontend
 const mapearProducto = (producto) => {
-  console.log('Mapeando producto desde backend:', producto);
-  
   const mapeado = {
     id: producto.id,
     Nombre: producto.nombre,
@@ -76,7 +110,6 @@ const mapearProducto = (producto) => {
     CantidadStock: producto.cantidad_stock !== undefined ? parseInt(producto.cantidad_stock) : 0
   };
   
-  console.log('Producto mapeado:', mapeado);
   return mapeado;
 };
 
@@ -117,13 +150,11 @@ const mapearProductoParaBackend = (producto) => {
 export const productosService = {
   // Obtener todos los productos
   obtenerTodos: async () => {
-    console.log('📋 Obteniendo todos los productos...');
     try {
       const response = await fetch(`${API_BASE_URL}/productos`);
       const data = await handleResponse(response);
       
       const productos = (data.data || []).map(mapearProducto);
-      console.log('✅ Productos obtenidos:', productos.length);
       
       return {
         success: true,
@@ -137,7 +168,6 @@ export const productosService = {
 
   // Obtener producto por ID
   obtenerPorId: async (id) => {
-    console.log('🔍 Obteniendo producto por ID:', id);
     try {
       // Validar ID - CORREGIDO para aceptar 0
       if (id === null || id === undefined || isNaN(id) || id < 0) {
@@ -148,7 +178,6 @@ export const productosService = {
       const data = await handleResponse(response);
       
       const producto = mapearProducto(data.data);
-      console.log('✅ Producto obtenido:', producto);
       
       return {
         success: true,
@@ -162,7 +191,6 @@ export const productosService = {
 
   // Crear nuevo producto
   crear: async (producto) => {
-    console.log('➕ Creando nuevo producto:', producto);
     try {
       // Convertir categorías a IDs
       let categoriaIds = [];
@@ -176,20 +204,13 @@ export const productosService = {
         categorias: categoriaIds
       };
       
-      console.log('📤 Datos a enviar:', productoParaEnviar);
-      
-      const response = await fetch(`${API_BASE_URL}/productos`, {
+      const response = await authenticatedFetch(`${API_BASE_URL}/productos`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(productoParaEnviar),
       });
       
       const data = await handleResponse(response);
       const productoCreado = mapearProducto(data.data);
-      
-      console.log('✅ Producto creado exitosamente:', productoCreado);
       
       return {
         success: true,
@@ -204,9 +225,6 @@ export const productosService = {
 
   // Actualizar producto - VERSIÓN CORREGIDA
   actualizar: async (id, producto) => {
-    console.log('🔄 Actualizando producto ID:', id);
-    console.log('📝 Datos del producto:', producto);
-    
     try {
       // Validar ID - CORREGIDO para aceptar 0
       if (id === null || id === undefined || isNaN(id) || id < 0) {
@@ -225,28 +243,15 @@ export const productosService = {
         categorias: categoriaIds
       };
       
-      console.log('📤 Datos a enviar al backend:', productoParaEnviar);
-      
-      // Realizar petición PUT
-      const response = await fetch(`${API_BASE_URL}/productos/${id}`, {
+      // Realizar petición PUT autenticada
+      const response = await authenticatedFetch(`${API_BASE_URL}/productos/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(productoParaEnviar),
-      });
-      
-      console.log('📡 Respuesta del servidor:', {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok
       });
       
       // Manejar respuesta
       const data = await handleResponse(response);
       const productoActualizado = mapearProducto(data.data);
-      
-      console.log('✅ Producto actualizado exitosamente:', productoActualizado);
       
       return {
         success: true,
@@ -262,19 +267,17 @@ export const productosService = {
 
   // Eliminar producto - TAMBIÉN CORREGIDO
   eliminar: async (id) => {
-    console.log('🗑️ Eliminando producto ID:', id);
     try {
       // Validar ID - CORREGIDO para aceptar 0
       if (id === null || id === undefined || isNaN(id) || id < 0) {
         throw new Error('ID de producto inválido');
       }
 
-      const response = await fetch(`${API_BASE_URL}/productos/${id}`, {
+      const response = await authenticatedFetch(`${API_BASE_URL}/productos/${id}`, {
         method: 'DELETE',
       });
       
       const data = await handleResponse(response);
-      console.log('✅ Producto eliminado exitosamente');
       
       return {
         success: true,
@@ -291,7 +294,6 @@ export const productosService = {
 export const categoriasService = {
   // Obtener todas las categorías
   obtenerTodas: async () => {
-    console.log('📋 Obteniendo todas las categorías...');
     try {
       const response = await fetch(`${API_BASE_URL}/categorias`);
       
@@ -300,7 +302,6 @@ export const categoriasService = {
       }
       
       const data = await response.json();
-      console.log('✅ Categorías obtenidas:', data.data?.length || 0);
       
       return {
         success: true,
@@ -314,7 +315,6 @@ export const categoriasService = {
 
   // Obtener categoría por ID
   obtenerPorId: async (id) => {
-    console.log('🔍 Obteniendo categoría por ID:', id);
     try {
       if (id === null || id === undefined || isNaN(id) || id < 0) {
         throw new Error('ID de categoría inválido');
@@ -327,7 +327,6 @@ export const categoriasService = {
       }
       
       const data = await response.json();
-      console.log('✅ Categoría obtenida:', data.data);
       
       return {
         success: true,
@@ -341,13 +340,9 @@ export const categoriasService = {
 
   // Crear nueva categoría
   crear: async (categoria) => {
-    console.log('➕ Creando nueva categoría:', categoria);
     try {
-      const response = await fetch(`${API_BASE_URL}/categorias`, {
+      const response = await authenticatedFetch(`${API_BASE_URL}/categorias`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(categoria),
       });
       
@@ -356,7 +351,6 @@ export const categoriasService = {
       }
       
       const data = await response.json();
-      console.log('✅ Categoría creada exitosamente:', data.data);
       
       return {
         success: true,
@@ -365,6 +359,63 @@ export const categoriasService = {
       };
     } catch (error) {
       console.error('❌ Error al crear categoría:', error);
+      throw error;
+    }
+  }
+};
+
+// Servicio para categorías de productos
+export const productosCategoriasService = {
+  // Obtener categorías de un producto
+  obtenerCategorias: async (productoId) => {
+    try {
+      if (productoId === null || productoId === undefined || isNaN(productoId) || productoId < 0) {
+        throw new Error('ID de producto inválido');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/productos/${productoId}/categorias`);
+      
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      return {
+        success: true,
+        data: data.data || []
+      };
+    } catch (error) {
+      console.error('❌ Error al obtener categorías del producto:', error);
+      throw error;
+    }
+  },
+
+  // Actualizar categorías de un producto
+  actualizarCategorias: async (productoId, categoriasIds) => {
+    try {
+      if (productoId === null || productoId === undefined || isNaN(productoId) || productoId < 0) {
+        throw new Error('ID de producto inválido');
+      }
+
+      const response = await authenticatedFetch(`${API_BASE_URL}/productos/${productoId}/categorias`, {
+        method: 'PUT',
+        body: JSON.stringify({ categorias: categoriasIds }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      return {
+        success: true,
+        data: data.data,
+        message: 'Categorías actualizadas exitosamente'
+      };
+    } catch (error) {
+      console.error('❌ Error al actualizar categorías del producto:', error);
       throw error;
     }
   }
