@@ -1,7 +1,6 @@
 const { pool } = require('../config/database');
 
 class ProductoModel {
-  // Obtener todos los productos con sus categorías
   static async getAll() {
     const query = `
       SELECT 

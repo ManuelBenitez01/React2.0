@@ -12,14 +12,13 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Función para probar la conexión
 const testConnection = async () => {
   try {
     const connection = await pool.getConnection();
     console.log('✅ Conexión a MySQL establecida correctamente');
     connection.release();
   } catch (error) {
-    console.error('❌ Error conectando a MySQL:', error.message);
+    console.error('Error conectando a MySQL:', error.message);
   }
 };
 

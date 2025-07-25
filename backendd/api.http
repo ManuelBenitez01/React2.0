@@ -1,0 +1,46 @@
+# Obtener todos los productos
+GET http://localhost:3000/productos
+Content-Type: application/json
+
+###
+
+# Obtener un producto por ID
+GET http://localhost:3000/productos/0
+Content-Type: application/json
+
+###
+
+# Crear un producto
+POST http://localhost:3000/productos
+Content-Type: application/json
+
+{
+    "nombre": "arrocito con pollo",
+    "precio": 1800.00,
+    "imagen": "https://don-antonio.com.ar/wp-content/uploads/2024/03/IMG_4430-scaled-1.jpg",
+    "descripcion": "",
+    "stock": true,
+    "cantidad_stock": 150
+}
+
+###
+
+# Modificar un producto
+PUT http://localhost:3000/productos/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "nombre": "Filet de Gatuzo",
+    "precio": 2000.00,
+    "imagen": "https://don-antonio.com.ar/wp-content/uploads/2024/03/IMG_4430-scaled-1.jpg",
+    "descripcion": "Filetes de gatuzo, un pescado blanco suave perfecto para empanadas o guisos. ",
+    "stock": true,
+    "cantidad_stock": 150
+}
+
+###
+
+# Eliminar un producto
+DELETE http://localhost:3000/productos/0
+Content-Type: application/json

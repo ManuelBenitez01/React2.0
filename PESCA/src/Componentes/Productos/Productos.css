@@ -37,7 +37,7 @@ body, .productos {
   transform: translateY(15px);
   animation: fadeSlideUp 0.5s ease forwards;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
-  max-height: 548px;
+  max-height: 600px;
   overflow: hidden;
 }
 

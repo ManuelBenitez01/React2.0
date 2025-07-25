@@ -228,6 +228,7 @@ h1, h2, h3 {
   .categorias-grid {
     flex-direction: column;
     align-items: center;
+    max-height: 1000px !important;
   }
   .categoria {
     width: 80%;

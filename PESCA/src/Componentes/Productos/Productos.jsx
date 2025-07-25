@@ -248,7 +248,7 @@ export default function Productos({ categoriaSeleccionada }) {
                                 onClick={() => agregarAlCarrito(Producto)}
                                 disabled={!Producto.Stock}
                                 style={{
-                                    backgroundColor: !Producto.Stock ? '#ccc' : '#2c5530',
+                                    backgroundColor: !Producto.Stock ? '#ccc' : '#0a3d3b',
                                     color: 'white',
                                     border: 'none',
                                     padding: '0.5rem 1rem',
@@ -263,7 +263,7 @@ export default function Productos({ categoriaSeleccionada }) {
                             
                             {cantidadEnCarrito(Producto.id) > 0 && (
                                 <div style={{ marginTop: '0.5rem' }}>
-                                    <span style={{ color: '#2c5530', fontWeight: 'bold' }}>
+                                    <span style={{ color: '#0a3d3b', fontWeight: 'bold' }}>
                                         En carrito: {cantidadEnCarrito(Producto.id)}
                                     </span>
                                     <button

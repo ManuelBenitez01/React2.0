@@ -5,30 +5,18 @@ const createProductoSchema = z.object({
   id: z.number().int().positive(),
   nombre: z.string().min(1, 'El nombre es requerido').max(255),
   precio: z.number().positive('El precio debe ser positivo'),
-  imagen: z.string().optional().or(z.literal('')).refine(val => {
-    if (!val || val === '') return true;
-    // Permitir URLs completas, rutas que empiecen con / o ./, o nombres de archivo simples
-    return val.startsWith('http') || val.startsWith('/') || val.startsWith('./') || val.startsWith('../') || val.includes('.');
-  }, 'Debe ser una URL válida o una ruta/nombre de archivo de imagen'),
+  imagen: z.string().url('Debe ser una URL válida').optional().or(z.literal('')),
   descripcion: z.string().optional(),
-  categorias: z.array(z.number().int().positive()).optional(),
-  stock: z.boolean().optional().default(true),
-  cantidad_stock: z.number().int().min(0, 'La cantidad de stock debe ser mayor o igual a 0').optional().default(0)
+  categorias: z.array(z.number().int().positive()).optional()
 });
 
 // Schema para actualizar producto (todos los campos opcionales excepto id)
 const updateProductoSchema = z.object({
   nombre: z.string().min(1).max(255).optional(),
   precio: z.number().positive().optional(),
-  imagen: z.string().optional().or(z.literal('')).refine(val => {
-    if (!val || val === '') return true;
-    // Permitir URLs completas, rutas que empiecen con / o ./, o nombres de archivo simples
-    return val.startsWith('http') || val.startsWith('/') || val.startsWith('./') || val.startsWith('../') || val.includes('.');
-  }, 'Debe ser una URL válida o una ruta/nombre de archivo de imagen'),
+  imagen: z.string().url().optional().or(z.literal('')),
   descripcion: z.string().optional(),
-  categorias: z.array(z.number().int().positive()).optional(),
-  stock: z.boolean().optional(),
-  cantidad_stock: z.number().int().min(0, 'La cantidad de stock debe ser mayor o igual a 0').optional()
+  categorias: z.array(z.number().int().positive()).optional()
 });
 
 // Schema para parámetros de ID
