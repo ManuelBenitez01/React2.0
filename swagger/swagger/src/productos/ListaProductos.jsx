@@ -9,7 +9,7 @@ export default function ListaProductos() {
   useEffect(() => {
     getProductos()
       .then(data => {
-        setProductos(data.data); // <-- aquí el cambio
+        setProductos(data.data); 
         setLoading(false);
       })
       .catch(err => {
