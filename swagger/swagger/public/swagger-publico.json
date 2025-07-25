@@ -1,0 +1,69 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Pública de Productos",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/productos": {
+      "get": {
+        "summary": "Obtener todos los productos",
+        "responses": {
+          "200": {
+            "description": "Lista de productos"
+          }
+        }
+      }
+    },
+    "/productos/{id}": {
+      "get": {
+        "summary": "Obtener producto por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto encontrado"
+          }
+        }
+      }
+    },
+    "/categorias": {
+      "get": {
+        "summary": "Obtener todas las categorías",
+        "responses": {
+          "200": {
+            "description": "Lista de categorías"
+          }
+        }
+      }
+    },
+    "/categorias/{id}": {
+      "get": {
+        "summary": "Obtener categoría por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoría encontrada"
+          }
+        }
+      }
+    }
+  }
+}
