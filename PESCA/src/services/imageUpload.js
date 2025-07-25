@@ -42,7 +42,7 @@ export const subirImagen = async (imageFile) => {
 
     // Crear FormData para enviar la imagen
     const formData = new FormData();
-    formData.append('image', imageFile);
+    formData.append('file', imageFile);
 
     // Realizar petición al backend
     const response = await fetch(`${API_BASE_URL}/images/upload`, {

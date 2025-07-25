@@ -68,7 +68,7 @@ router.get('/status', ImageController.getStatus);
 router.post('/upload', 
   authenticateToken(pool), 
   requireAdmin, 
-  upload.single('image'), 
+  upload.single('file'), // Cambiado 'image' por 'file' para que coincida con el frontend
   handleMulterError,
   ImageController.uploadImage
 );

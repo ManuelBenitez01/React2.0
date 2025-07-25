@@ -1,5 +1,11 @@
 // Servicio para subir imágenes a ImgBB desde el backend
-const fetch = require('node-fetch');
+let fetch;
+try {
+  fetch = require('node-fetch');
+  if (fetch.default) fetch = fetch.default;
+} catch (e) {
+  fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+}
 
 class ImageUploadService {
   constructor() {
@@ -32,18 +38,18 @@ class ImageUploadService {
    */
   validateImage(file) {
     if (!file) {
+      console.error('❌ [validateImage] No se recibió ningún archivo:', file);
       throw new Error('No se recibió ningún archivo');
     }
-
     if (!this.allowedTypes.includes(file.mimetype)) {
+      console.error('❌ [validateImage] Formato de imagen no válido:', file.mimetype);
       throw new Error('Formato de imagen no válido. Usa JPG, PNG, GIF, WebP o BMP');
     }
-
     if (file.size > this.maxFileSize) {
       const sizeMB = (this.maxFileSize / (1024 * 1024)).toFixed(0);
+      console.error('❌ [validateImage] Imagen demasiado grande:', file.size, 'bytes');
       throw new Error(`Imagen demasiado grande. Máximo ${sizeMB}MB permitido`);
     }
-
     return true;
   }
 
@@ -126,25 +132,26 @@ class ImageUploadService {
    */
   async uploadImage(file) {
     try {
-      // Validar imagen
+      console.log('📥 [uploadImage] Archivo recibido:', file ? {
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+        size: file.size
+      } : file);
       this.validateImage(file);
-      
       // Subir a ImgBB
       const result = await this.uploadToImgBB(file.buffer, file.originalname);
-      
       return {
         success: true,
         data: result,
         message: 'Imagen subida exitosamente'
       };
-
     } catch (error) {
       console.error('❌ Error en uploadImage:', error);
-      
+      // Devuelve el error real al frontend para depuración
       return {
         success: false,
-        error: error.message,
-        message: 'Error al subir imagen'
+        error: error.message || String(error),
+        message: error.message || 'Error al subir imagen'
       };
     }
   }
